@@ -2,11 +2,10 @@ package game.entity;
 
 import java.awt.image.BufferedImage;
 
-public class Entity {
+public class Entity{
 
-
-    private Direction facingDirection;
     private int x,y;
+    private Direction facingDirection;
     private int speed;
 
     private final Texture texture;
@@ -23,12 +22,12 @@ public class Entity {
         return x;
     }
 
-    public int getY() {
-        return y;
-    }
-
     public void setX(int x) {
         this.x = x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public void setY(int y) {

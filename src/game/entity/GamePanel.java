@@ -1,14 +1,14 @@
-package game;
+package game.entity;
 
-import game.entity.Direction;
-import game.entity.Player;
-import game.entity.Texture;
+import game.KeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
 public class GamePanel extends JPanel implements Runnable{
+
+    private boolean running = false;
 
     private final int originalTileSize = 16; // 16 x 16 tile
     private final int scale = 3;
@@ -24,16 +24,10 @@ public class GamePanel extends JPanel implements Runnable{
 
     private Player player;
 
-    private int FPS = 60;
-
-    private double nextDrawInterval = 0;
-    private double drawInterval = 1000000000/FPS;
-
 
     public GamePanel() throws IOException {
-        System.out.println(screenWidth + " " + screenHeight);
-
         this.player = new Player(100,100,4,"Adam_16x16.png");
+        System.out.println(screenWidth + " " + screenHeight);
 
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.green);
@@ -43,43 +37,65 @@ public class GamePanel extends JPanel implements Runnable{
 
         gameThread = new Thread(this);
         gameThread.start();
+
     }
+
 
     @Override
     public void run() {
-        while (gameThread != null) {
+        this.running = true;
+        long lastTime = System.nanoTime();
+        double amountOfTicks = 60.0;
+        double ns = 1000000000/amountOfTicks;
+        double delta = 0;
+        long timer = System.currentTimeMillis();
+        int frames = 0;
 
-            if (System.nanoTime() >= nextDrawInterval) {
-                nextDrawInterval = System.nanoTime() + drawInterval;
+        while (running) {
+            long now = System.nanoTime();
+            delta += (now - lastTime) / ns;
+            lastTime = now;
+
+            while (delta >= 1) {
                 update();
-                repaint();
+                delta--;
             }
+
+            if (running)
+                repaint();
+            frames++;
+
+            if (System.currentTimeMillis() - timer > 1000) {
+                timer += 1000;
+                System.out.println("FPS: " + frames);
+                frames = 0;
+            }
+
         }
     }
 
     public void update() {
-
         int playerSpeed = keyH.isMovingDiagonally() ? 3 : this.player.getSpeed();
 
-        if (keyH.isUpPressed()) {
+        if (keyH.isKeyPressed("W")) {
             player.setY(player.getY() - playerSpeed);
-            player.setFacingDirection(Direction.DOWN);
-        }
-        if (keyH.isDownPressed()) {
-            player.setY(player.getY() + playerSpeed);
             player.setFacingDirection(Direction.UP);
         }
-        if (keyH.isLeftPressed()) {
+        if (keyH.isKeyPressed("S")) {
+            player.setY(player.getY() + playerSpeed);
+            player.setFacingDirection(Direction.DOWN);
+        }
+        if (keyH.isKeyPressed("A")) {
             player.setX(player.getX() - playerSpeed);
             player.setFacingDirection(Direction.LEFT);
         }
-        if (keyH.isRightPressed()) {
+        if (keyH.isKeyPressed("D")) {
             player.setX(player.getX() + playerSpeed);
             player.setFacingDirection(Direction.RIGHT);
         }
 
         player.getTexture().addToMovingSprite();
-        if (keyH.isKeysNoPressed()) player.getTexture().resetMovingSprite();
+        if (keyH.isNotMoving()) player.getTexture().resetMovingSprite();
 
     }
 
@@ -89,10 +105,9 @@ public class GamePanel extends JPanel implements Runnable{
 
         Graphics2D g2 = (Graphics2D) g;
 
-        g2.setColor(Color.white);
 
         g2.drawImage(Direction.getImageForDirection(player.getTexture(),player.getFacingDirection())[player.getTexture().getMovingSprite()],
-                player.getX(),player.getY(), Texture.w * (scale - 1),Texture.h * (scale - 1),null);
+                player.getX(),player.getY(), Texture.w * 2,Texture.h * 2,null);
         g2.dispose();
     }
 }

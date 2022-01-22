@@ -2,10 +2,16 @@ package game;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashSet;
+import java.util.Set;
 
 public class KeyHandler implements KeyListener {
 
-    private boolean upPressed,downPressed,leftPressed,rightPressed;
+    private Set<Integer> keysPressed;
+
+    public KeyHandler() {
+        this.keysPressed = new HashSet<>();
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -15,62 +21,29 @@ public class KeyHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-
-        if (code == KeyEvent.VK_W) {
-            upPressed = true;
-            System.out.println("Pressed W");
-        }
-        if (code == KeyEvent.VK_S) {
-            downPressed = true;
-        }
-        if (code == KeyEvent.VK_D) {
-            rightPressed = true;
-        }
-        if (code == KeyEvent.VK_A) {
-            leftPressed = true;
-        }
+        keysPressed.add(code);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
-
-        if (code == KeyEvent.VK_W) {
-            upPressed = false;
-        }
-        if (code == KeyEvent.VK_S) {
-            downPressed = false;
-        }
-        if (code == KeyEvent.VK_D) {
-            rightPressed = false;
-        }
-        if (code == KeyEvent.VK_A) {
-            leftPressed = false;
-        }
+        keysPressed.remove(code);
     }
 
-    public boolean isUpPressed() {
-        return upPressed;
+    public boolean isKeyPressed(Integer e) {
+        return keysPressed.contains(e);
     }
 
-    public boolean isDownPressed() {
-        return downPressed;
+    public boolean isKeyPressed(String key) {
+        return isKeyPressed(KeyEvent.getExtendedKeyCodeForChar(key.charAt(0)));
     }
 
-    public boolean isLeftPressed() {
-        return leftPressed;
-    }
-
-    public boolean isRightPressed() {
-        return rightPressed;
-    }
-
-
-    public boolean isKeysNoPressed() {
-        return !isRightPressed() && !isLeftPressed() && !isDownPressed() && !isUpPressed();
+    public boolean isNotMoving() {
+        return !isKeyPressed("W") && !isKeyPressed("S") && !isKeyPressed("D") && !isKeyPressed("A");
     }
 
     public boolean isMovingDiagonally() {
-        return upPressed && leftPressed || upPressed && rightPressed || downPressed && leftPressed || downPressed && rightPressed;
+        return isKeyPressed("W") && isKeyPressed("A") || isKeyPressed("W") && isKeyPressed("D")
+                || isKeyPressed("S") && isKeyPressed("A") || isKeyPressed("S") && isKeyPressed("D");
     }
 }
