@@ -1,69 +1,79 @@
 package game.entity;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class Texture {
 
     public static int w = 16, h = 24; // TEXTURES WIDTH AND LENGTH
 
-    private BufferedImage[] movingUp,movingDown,movingRight,movingLeft;
+    private Animation standingUp,standingDown,standingRight,standingLeft;
 
-    private int movingSprite = 29;
+    private Animation movingUp,movingDown,movingRight,movingLeft;
 
     public Texture(BufferedImage image) {
+        standingRight = new Animation(image.getSubimage(0,8,w,h));
+        standingUp = new Animation(image.getSubimage(16,8,w,h));
+        standingLeft = new Animation(image.getSubimage(32,8,w,h));
+        standingDown = new Animation(image.getSubimage(48,8,w,h));
 
-        movingRight = new BufferedImage[6];
+        BufferedImage[] movingRight = new BufferedImage[6];
         for (int i = 0; i < 6; i++) {
             movingRight[i] = image.getSubimage(i * 16,72,w,h);
         }
+        this.movingRight = new Animation(movingRight);
 
-        movingUp = new BufferedImage[6];
+        BufferedImage[] movingUp = new BufferedImage[6];
         for (int i = 0; i < 6; i++) {
             movingUp[i] = image.getSubimage(i * 16 + 96,72,w,h);
         }
+        this.movingUp = new Animation(movingUp);
 
-        movingLeft = new BufferedImage[6];
+        BufferedImage[] movingLeft = new BufferedImage[6];
         for (int i = 0; i < 6; i++) {
             movingLeft[i] = image.getSubimage(i * 16 + (96*2),72,w,h);
         }
+        this.movingLeft = new Animation(movingLeft);
 
-        movingDown = new BufferedImage[6];
+
+        BufferedImage[]  movingDown = new BufferedImage[6];
         for (int i = 0; i < 6; i++) {
             movingDown[i] = image.getSubimage(i * 16 + (96*3),72,w,h);
         }
-
+        this.movingDown = new Animation(movingDown);
 
 
     }
 
-    public BufferedImage[] getMovingUp() {
+    public Animation getMovingUp() {
         return movingUp;
     }
 
-    public BufferedImage[] getMovingDown() {
+    public Animation getMovingDown() {
         return movingDown;
     }
 
-    public BufferedImage[] getMovingRight() {
+    public Animation getMovingRight() {
         return movingRight;
     }
 
-    public BufferedImage[] getMovingLeft() {
+    public Animation getMovingLeft() {
         return movingLeft;
     }
 
-    public void addToMovingSprite() {
-        movingSprite = (movingSprite + 1) == movingDown.length * 5 ? 0 : movingSprite + 1;
+    public Animation getStandingUp() {
+        return standingUp;
     }
 
-    public int getMovingSprite() {
-        return (movingSprite * 2) / 10;
+    public Animation getStandingDown() {
+        return standingDown;
     }
 
-    public void resetMovingSprite() {
-        movingSprite = 29;
+    public Animation getStandingRight() {
+        return standingRight;
     }
+
+    public Animation getStandingLeft() {
+        return standingLeft;
+    }
+
 }

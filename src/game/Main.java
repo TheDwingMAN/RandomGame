@@ -9,7 +9,6 @@ public class Main {
 
     private static JFrame window;
 
-
     public static void main(String[] args) throws IOException {
 
         window = new JFrame();

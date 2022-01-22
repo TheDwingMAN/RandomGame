@@ -76,7 +76,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void update() {
         int playerSpeed = keyH.isMovingDiagonally() ? 3 : this.player.getSpeed();
-
+        player.setMoving(true);
         if (keyH.isKeyPressed("W")) {
             player.setY(player.getY() - playerSpeed);
             player.setFacingDirection(Direction.UP);
@@ -94,8 +94,12 @@ public class GamePanel extends JPanel implements Runnable{
             player.setFacingDirection(Direction.RIGHT);
         }
 
-        player.getTexture().addToMovingSprite();
-        if (keyH.isNotMoving()) player.getTexture().resetMovingSprite();
+        Animation animation= Direction.getMovingAnimationForDirection(player.getTexture(),player.getFacingDirection());
+        animation.runAnimation();
+        if (keyH.isNotMoving()) {
+            animation.resetAnimation();
+            player.setMoving(false);
+        }
 
     }
 
@@ -106,8 +110,14 @@ public class GamePanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
 
-        g2.drawImage(Direction.getImageForDirection(player.getTexture(),player.getFacingDirection())[player.getTexture().getMovingSprite()],
-                player.getX(),player.getY(), Texture.w * 2,Texture.h * 2,null);
+        Animation animation = player.isMoving() ? Direction.getMovingAnimationForDirection(player.getTexture(),
+                              player.getFacingDirection()) :
+                              Direction.getStandingAnimationForDirection(player.getTexture(),player.getFacingDirection());
+
+
+
+        animation.drawAnimation(g2,player.getX(),player.getY());
+
         g2.dispose();
     }
 }

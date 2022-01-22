@@ -39,7 +39,7 @@ public class KeyHandler implements KeyListener {
     }
 
     public boolean isNotMoving() {
-        return !isKeyPressed("W") && !isKeyPressed("S") && !isKeyPressed("D") && !isKeyPressed("A");
+        return (!isKeyPressed("W") && !isKeyPressed("S") && !isKeyPressed("D") && !isKeyPressed("A"));
     }
 
     public boolean isMovingDiagonally() {
