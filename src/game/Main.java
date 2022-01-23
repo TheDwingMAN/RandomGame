@@ -3,7 +3,10 @@ package game;
 import game.entity.GamePanel;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
 public class Main {
 
@@ -15,7 +18,15 @@ public class Main {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Random 2D Game");
-        GamePanel gamePanel = new GamePanel();
+
+        File world = null;
+        try {
+            world = Paths.get(Main.class.getResource("/Resources/Map/map.txt").toURI()).toFile();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        GamePanel gamePanel = new GamePanel(world,32,20);
         window.add(gamePanel);
 
         window.pack();

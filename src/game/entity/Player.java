@@ -11,6 +11,7 @@ public class Player extends Entity{
 
     private boolean isMoving;
 
+
     public Player(int x, int y, int speed, BufferedImage texture) {
         super(x, y, speed, texture);
     }

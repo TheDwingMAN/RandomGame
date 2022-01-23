@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 public class Animation {
 
-    private int speed;
+    private int speed; //The bigger the speed the slower the animation will run
     private int frames;
 
     private int index = 0;

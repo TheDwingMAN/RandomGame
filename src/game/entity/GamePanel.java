@@ -1,36 +1,46 @@
 package game.entity;
 
 import game.KeyHandler;
+import game.Main;
+import game.map.TileManager;
+import game.map.World;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    private boolean running = false;
-
     private final int originalTileSize = 16; // 16 x 16 tile
     private final int scale = 3;
 
-    private final int tileSize = originalTileSize * scale;
+    private final int tileSize = originalTileSize * scale; //48 Pixels
     private final int screenCol = 16;
     private final int screenRow = 12;
     private final int screenWidth = tileSize * screenCol;
     private final int screenHeight = tileSize * screenRow;
 
+
+    World world;
+
+
     private KeyHandler keyH = new KeyHandler();
+    private TileManager tileManager = new TileManager(this);
     private Thread gameThread;
 
     private Player player;
+    private final int screenX = screenWidth/2 - (tileSize/2);
+    private final int screenY = screenHeight/2 - (tileSize/2);
+
+    public GamePanel(File worldFile,int worldWidth,int worldHeight) throws IOException {
+        this.player = new Player(screenX,screenY,4,"Adam_16x16.png");
+        this.world = new World(this,worldWidth,worldHeight,worldFile);
 
 
-    public GamePanel() throws IOException {
-        this.player = new Player(100,100,4,"Adam_16x16.png");
         System.out.println(screenWidth + " " + screenHeight);
 
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
-        this.setBackground(Color.green);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
@@ -43,13 +53,15 @@ public class GamePanel extends JPanel implements Runnable{
 
     @Override
     public void run() {
-        this.running = true;
+        tileManager.loadWorld(world);
+        boolean running = true;
         long lastTime = System.nanoTime();
         double amountOfTicks = 60.0;
         double ns = 1000000000/amountOfTicks;
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
+
 
         while (running) {
             long now = System.nanoTime();
@@ -94,7 +106,7 @@ public class GamePanel extends JPanel implements Runnable{
             player.setFacingDirection(Direction.RIGHT);
         }
 
-        Animation animation= Direction.getMovingAnimationForDirection(player.getTexture(),player.getFacingDirection());
+        Animation animation = Direction.getMovingAnimationForDirection(player.getTexture(),player.getFacingDirection());
         animation.runAnimation();
         if (keyH.isNotMoving()) {
             animation.resetAnimation();
@@ -105,10 +117,10 @@ public class GamePanel extends JPanel implements Runnable{
 
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
+        //super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        tileManager.drawMap(g2);
 
         Animation animation = player.isMoving() ? Direction.getMovingAnimationForDirection(player.getTexture(),
                               player.getFacingDirection()) :
@@ -116,8 +128,44 @@ public class GamePanel extends JPanel implements Runnable{
 
 
 
-        animation.drawAnimation(g2,player.getX(),player.getY());
+        animation.drawAnimation(g2,screenX,screenY);
 
         g2.dispose();
+    }
+
+    public int getScreenCol() {
+        return screenCol;
+    }
+
+    public int getScreenRow() {
+        return screenRow;
+    }
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public World getWorld() {
+        return world;
     }
 }
