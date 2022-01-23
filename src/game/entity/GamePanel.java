@@ -38,7 +38,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.world = new World(this,worldWidth,worldHeight,worldFile);
 
 
-        System.out.println(screenWidth + " " + screenHeight);
+        System.out.println(screenX + " " + screenY);
 
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setDoubleBuffered(true);
@@ -125,7 +125,6 @@ public class GamePanel extends JPanel implements Runnable{
         Animation animation = player.isMoving() ? Direction.getMovingAnimationForDirection(player.getTexture(),
                               player.getFacingDirection()) :
                               Direction.getStandingAnimationForDirection(player.getTexture(),player.getFacingDirection());
-
 
 
         animation.drawAnimation(g2,screenX,screenY);

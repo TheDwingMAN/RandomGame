@@ -74,6 +74,7 @@ public class TileManager {
                 int screenX = worldX - gp.getPlayer().getX() + gp.getScreenX();
                 int screenY = worldY - gp.getPlayer().getY() + gp.getScreenY();
 
+
                 if (worldX + gp.getTileSize() > gp.getPlayer().getX() - gp.getScreenX() &&
                     worldX - gp.getTileSize() < gp.getPlayer().getX() + gp.getScreenX() &&
                     worldY + gp.getTileSize() > gp.getPlayer().getY() - gp.getScreenY() &&
