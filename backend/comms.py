@@ -58,7 +58,9 @@ def create_packet(content: bytes, type: PacketID, key: bytes) -> bytes:
         the packet's data
     """
     encoded_time = struct.pack("f", time.mktime(datetime.now().timetuple()))
-    header = int(type).to_bytes(1, "big") + len(content).to_bytes(2, "big") + encoded_time
+    header = (
+        int(type).to_bytes(1, "big") + len(content).to_bytes(2, "big") + encoded_time
+    )
     data = header + content
     return hmac.digest(key, data, "md5") + data
 
