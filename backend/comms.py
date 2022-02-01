@@ -58,8 +58,7 @@ def create_packet(content: bytes, type: PacketID, key: bytes) -> bytes:
         the packet's data
     """
     encoded_time = struct.pack("f", time.mktime(datetime.now().timetuple()))
-    header = int(type).to_bytes(1) + len(content).to_bytes(2, "big") + encoded_time
-    print(header)
+    header = int(type).to_bytes(1, "big") + len(content).to_bytes(2, "big") + encoded_time
     data = header + content
     return hmac.digest(key, data, "md5") + data
 
@@ -86,8 +85,8 @@ def unpack_packet(conn: socket, key: bytes) -> PacketInfo:
     try:
         type, content_length, time_stamp = (
             PacketID(header[0]),
-            int.from_bytes(header[0:1], "big"),
-            datetime.fromtimestamp(struct.unpack("f", header[2:])),
+            int.from_bytes(header[1:3], "big"),
+            datetime.fromtimestamp(struct.unpack("f", header[3:])[0]),
         )
     except Exception:
         logging.warning(f"Invalid header was given to socket {conn}", exc_info=True)
