@@ -1,0 +1,14 @@
+"""General constants"""
+
+SERVER_IPv6 = "smth"
+
+
+# Packet structure consts, sizes in bytes
+SHARED_KEY_SIZE = 48
+HMAC_SIZE = 16 
+TYPE_SIZE = 1
+CONTENT_LENGTH_SIZE = 2
+TIMESTAMP_SIZE = 4
+
+
+HEADER_SIZE = HMAC_SIZE + TYPE_SIZE + CONTENT_LENGTH_SIZE + TIMESTAMP_SIZE
