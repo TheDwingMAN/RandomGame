@@ -1,5 +1,5 @@
 .idea
-*.iml
+RandomGame.iml
 /out
 /backend/auth/.env
 /backend/auth/email_auth.py
