@@ -1,3 +1,7 @@
-/.idea
+.idea
 *.iml
 /out
+/backend/auth/.env
+/backend/auth/email_auth.py
+__pycache__
+.vscode
