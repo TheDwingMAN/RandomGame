@@ -1,5 +1,6 @@
 package game.entity;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity{
@@ -9,6 +10,7 @@ public class Entity{
     private int speed;
 
     private final Texture texture;
+    protected final Rectangle hitbox;
 
     protected Entity(int x, int y, int speed, BufferedImage texture) {
         this.x = x;
@@ -16,6 +18,7 @@ public class Entity{
         this.speed = speed;
         this.texture = new Texture(texture);
         facingDirection = Direction.UP;
+        this.hitbox = new Rectangle();
     }
 
     public int getX() {
@@ -52,5 +55,9 @@ public class Entity{
 
     public void setFacingDirection(Direction facingDirection) {
         this.facingDirection = facingDirection;
+    }
+
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 }

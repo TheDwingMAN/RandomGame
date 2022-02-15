@@ -1,7 +1,5 @@
 package game;
 
-import game.entity.GamePanel;
-
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;

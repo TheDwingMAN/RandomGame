@@ -1,7 +1,13 @@
-package game.entity;
+package game;
 
 import game.KeyHandler;
 import game.Main;
+import game.entity.Animation;
+import game.entity.CollisionChecker;
+import game.entity.Direction;
+import game.entity.Player;
+import game.font.Font;
+import game.font.FontManager;
 import game.map.TileManager;
 import game.map.World;
 
@@ -27,15 +33,24 @@ public class GamePanel extends JPanel implements Runnable{
 
     private KeyHandler keyH = new KeyHandler();
     private TileManager tileManager = new TileManager(this);
+    private CollisionChecker collisionChecker;
+    private FontManager fontManager;
     private Thread gameThread;
 
     private Player player;
     private final int screenX = screenWidth/2 - (tileSize/2);
     private final int screenY = screenHeight/2 - (tileSize/2);
 
+    private static GamePanel instance;
+
     public GamePanel(File worldFile,int worldWidth,int worldHeight) throws IOException {
         this.player = new Player(screenX,screenY,4,"Adam_16x16.png");
         this.world = new World(this,worldWidth,worldHeight,worldFile);
+        this.collisionChecker = new CollisionChecker(this);
+        this.fontManager = new FontManager(this);
+
+        //Font font = new Font("Classic",);
+
 
 
         System.out.println(screenX + " " + screenY);
@@ -47,7 +62,7 @@ public class GamePanel extends JPanel implements Runnable{
 
         gameThread = new Thread(this);
         gameThread.start();
-
+        instance = this;
     }
 
 
@@ -89,25 +104,36 @@ public class GamePanel extends JPanel implements Runnable{
     public void update() {
         int playerSpeed = keyH.isMovingDiagonally() ? 3 : this.player.getSpeed();
         player.setMoving(true);
+
         if (keyH.isKeyPressed("W")) {
-            player.setY(player.getY() - playerSpeed);
+            if (!collisionChecker.hasCollision(player, Direction.UP))
+                player.setY(player.getY() - playerSpeed);
             player.setFacingDirection(Direction.UP);
         }
         if (keyH.isKeyPressed("S")) {
-            player.setY(player.getY() + playerSpeed);
+            if (!collisionChecker.hasCollision(player,Direction.DOWN))
+                player.setY(player.getY() + playerSpeed);
             player.setFacingDirection(Direction.DOWN);
         }
         if (keyH.isKeyPressed("A")) {
-            player.setX(player.getX() - playerSpeed);
+            if (!collisionChecker.hasCollision(player,Direction.LEFT))
+                player.setX(player.getX() - playerSpeed);
             player.setFacingDirection(Direction.LEFT);
         }
         if (keyH.isKeyPressed("D")) {
-            player.setX(player.getX() + playerSpeed);
+            if (!collisionChecker.hasCollision(player,Direction.RIGHT))
+                player.setX(player.getX() + playerSpeed);
             player.setFacingDirection(Direction.RIGHT);
+        }
+
+        if (keyH.isKeyPressed("Q")) {
+            player.setCurrentHP((int) (player.getCurrentHP() * 0.9));
         }
 
         Animation animation = Direction.getMovingAnimationForDirection(player.getTexture(),player.getFacingDirection());
         animation.runAnimation();
+
+
         if (keyH.isNotMoving()) {
             animation.resetAnimation();
             player.setMoving(false);
@@ -127,7 +153,31 @@ public class GamePanel extends JPanel implements Runnable{
                               Direction.getStandingAnimationForDirection(player.getTexture(),player.getFacingDirection());
 
 
-        animation.drawAnimation(g2,screenX,screenY);
+
+        int x = screenX, y = screenY;
+
+        if (player.getX() < screenX) {
+            x = player.getX();
+        }
+
+        if (player.getY() < screenY) {
+            y = player.getY();
+        }
+
+        int rightOffset = screenWidth - screenX;
+        if (rightOffset > world.getWorldWidth() - player.getX()) {
+            x = screenWidth - (world.getWorldWidth() - player.getX());
+        }
+
+        int bottomOffset = screenHeight - screenY;
+        if (bottomOffset > world.getWorldHeight() - player.getY()) {
+            y = screenHeight - (world.getWorldHeight() - player.getY());
+        }
+
+
+        animation.drawAnimation(g2,x,y);
+
+        player.updateHPBar(g2);
 
         g2.dispose();
     }
@@ -164,7 +214,19 @@ public class GamePanel extends JPanel implements Runnable{
         return screenHeight;
     }
 
+    public int getScale() {
+        return scale;
+    }
+
     public World getWorld() {
         return world;
+    }
+
+    public TileManager getTileManager() {
+        return tileManager;
+    }
+
+    public static GamePanel getInstance() {
+        return instance;
     }
 }

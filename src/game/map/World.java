@@ -1,6 +1,6 @@
 package game.map;
 
-import game.entity.GamePanel;
+import game.GamePanel;
 
 import java.io.File;
 
@@ -18,8 +18,8 @@ public class World {
         this.maxWorldCol = maxWorldCol;
         this.maxWorldRow = maxWorldRow;
         this.worldFile = worldFile;
-        this.worldWidth = maxWorldCol * gp.getTileSize();
-        this.worldHeight = maxWorldRow * gp.getTileSize();
+        this.worldWidth = maxWorldRow * gp.getTileSize();
+        this.worldHeight = maxWorldCol * gp.getTileSize();
     }
 
     public int getMaxWorldCol() {

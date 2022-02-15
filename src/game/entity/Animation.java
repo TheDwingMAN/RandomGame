@@ -5,22 +5,30 @@ import java.awt.image.BufferedImage;
 
 public class Animation {
 
+
     private int speed; //The bigger the speed the slower the animation will run
+    private int scale;
     private int frames;
+
 
     private int index = 0;
     private int count = 0;
 
     private BufferedImage[] images;
 
-    public Animation(int speed, BufferedImage... images) {
+    public Animation(int speed,int scale, BufferedImage... images) {
         this.images = images;
         this.speed = speed;
         frames = images.length;
+        this.scale = scale;
+    }
+
+    public Animation(int scale,BufferedImage... images) {
+        this(4,scale,images);
     }
 
     public Animation(BufferedImage... images) {
-        this(4,images);
+        this(4,2,images);
     }
 
     public void runAnimation() {
@@ -46,5 +54,7 @@ public class Animation {
         this.count = 0;
     }
 
-
+    public int getScale() {
+        return scale;
+    }
 }
