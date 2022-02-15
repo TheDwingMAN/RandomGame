@@ -9,14 +9,14 @@ from enum import IntEnum
 from typing import NamedTuple
 from cryptography.hazmat.primitives.asymmetric.ec import (
     generate_private_key,
-    derive_private_key,
     ECDH,
     EllipticCurvePublicKey,
 )
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives.hashes import SHA256
-from backend.consts import COMPRESSED_POINT_SIZE, ELLIPTIC_CURVE, HMAC_SIZE, HEADER_SIZE
+from cryptography.hazmat.backends.openssl import backend
+from consts import COMPRESSED_POINT_SIZE, ELLIPTIC_CURVE, HMAC_SIZE, HEADER_SIZE
 
 
 class PacketID(IntEnum):
@@ -123,7 +123,8 @@ def get_shared_key(conn: socket) -> bytes:
     bytes
         The derived shared key
     """
-    private_key = generate_private_key(ELLIPTIC_CURVE)  # get private key
+    private_key = backend.generate_elliptic_curve_private_key(ELLIPTIC_CURVE)
+    print(private_key._backend)
     conn.send(
         private_key.public_key().public_bytes(
             Encoding.X962, PublicFormat.CompressedPoint

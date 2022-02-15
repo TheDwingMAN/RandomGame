@@ -7,5 +7,6 @@ if __name__ == "__main__":
         server.listen()
         while True:
             conn, addr = server.accept()
-            print(unpack_packet(conn, "MY_K3Y".encode()))
+            key = get_shared_key(conn)
+            print(key)         
             
